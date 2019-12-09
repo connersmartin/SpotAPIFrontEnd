@@ -72,6 +72,15 @@ namespace SpotAPIFrontEnd.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public async Task<JsonResult> SpotParams(Spot spotParams)
+        {
+           //get auth cookie
+           //jsonify params
+           //send to spot api
+
+           //returns okay response with a redirect to viewing the tracks?
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

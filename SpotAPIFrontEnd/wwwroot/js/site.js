@@ -1,4 +1,14 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$("#authBtn").click(function () {
+    location.href = 'Home/Auth';
+});
+if (document.cookie.indexOf('spotauthtoke')!==-1) {
+    $("#initLink").removeAttr("hidden");
+}
 
-// Write your JavaScript code.
+$("#showPartial").click(function () {
+    $("#SpotParams").removeAttr("hidden");
+});
+
+//ajax call for getting playlists
+
+//ajax call for getting tracks

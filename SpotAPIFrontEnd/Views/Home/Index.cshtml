@@ -4,9 +4,20 @@
 
 <div class="text-center">
     <h1 class="display-4">Do you want to build a playlist?</h1>
-    <button id="authBtn" onclick="location.href='@Url.Action("Auth","Home")'">Do it</button>
+    <button id="authBtn">Do it</button>
+    <div id="initLink" hidden>
+        <a href="#" id="showPartial">Click Here To Get Started </a>
+    </div> 
 </div>
-<partial id="view">
-    @Html.Partial("SpotParams", new Spot { })
-</partial>
+<div id="SpotParams" hidden>
+    @Html.Partial("SpotParams")
+</div>
+
+<div id="ViewPlaylists">
+   
+</div>
+
+<div id="ViewTracks">
+   
+</div>
  
