@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,6 +10,8 @@ using SpotAPIFrontEnd.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using SpotAPIFrontEnd.Services;
 
 namespace SpotAPIFrontEnd.Controllers
 {
@@ -17,10 +19,12 @@ namespace SpotAPIFrontEnd.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _config;
-        public HomeController(ILogger<HomeController> logger, IConfiguration config)
+        private readonly SpotApiService _sas;
+        public HomeController(ILogger<HomeController> logger, IConfiguration config, SpotApiService sas)
         {
             _logger = logger;
             _config = config;
+            _sas = sas;
         }
 
         public IActionResult Index()
@@ -50,7 +54,7 @@ namespace SpotAPIFrontEnd.Controllers
         {
             if (Request.Query.ContainsKey("code"))
             {
-                HttpResponseMessage response = new HttpResponseMessage();
+                HttpResponseMessage response;
                 var responseContent ="";
                 using (var client = new HttpClient())
                 {
@@ -73,13 +77,17 @@ namespace SpotAPIFrontEnd.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public async Task<JsonResult> SpotParams(Spot spotParams)
+        public async Task<JsonResult> SpotParams(CreatePlaylistRequest spotParams)
         {
-           //get auth cookie
-           //jsonify params
-           //send to spot api
-
-           //returns okay response with a redirect to viewing the tracks?
+            //get auth cookie
+            HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
+            spotParams.Auth = auth;
+            //jsonify params
+            var jsonParams = JsonSerializer.Serialize(spotParams);
+            //send to spot api
+            var res = await _sas.Access("post", "/Create", jsonParams);
+            //returns okay response with a redirect to viewing the tracks?
+            return new JsonResult(new CreatePlaylistRequest { });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

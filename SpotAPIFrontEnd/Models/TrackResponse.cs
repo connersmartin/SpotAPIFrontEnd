@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace SpotAPIFrontEnd.Models
 {
-    public class Playlist
+    public class TrackResponse
     {
-        public string Id { get; set; }
+        public List<string> Artists { get; set; }
         public string Title { get; set; }
-        public int TrackCount { get; set; }
-        public int Length { get; set; }       
-
+        public int Length { get; set; }
+   
     }
 }
