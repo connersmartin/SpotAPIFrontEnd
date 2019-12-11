@@ -7,7 +7,6 @@ namespace SpotAPIFrontEnd.Models
 {
     public class CreatePlaylistRequest
     {
-        public string Auth { get; set; }
         public string Name { get; set; }
         public int Length { get; set; }
         public List<string> Genres { get; set; }

@@ -19,7 +19,7 @@ namespace SpotAPIFrontEnd.Services
             _logger = logger;
             _config = config;
         }
-        public async Task<string> Access(string method,string path, string json)
+        public async Task<string> Access(string method,string auth, string path, string json)
         {
             var url = _config.GetValue<string>("spotServiceUrl");
             var response = new HttpResponseMessage();
@@ -27,6 +27,7 @@ namespace SpotAPIFrontEnd.Services
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("auth", auth);
                 switch (method)
                 {
                     case "get":

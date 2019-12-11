@@ -81,11 +81,11 @@ namespace SpotAPIFrontEnd.Controllers
         {
             //get auth cookie
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
-            spotParams.Auth = auth;
+
             //jsonify params
             var jsonParams = JsonSerializer.Serialize(spotParams);
             //send to spot api
-            var res = await _sas.Access("post", "/Create", jsonParams);
+            var res = await _sas.Access("post", auth, "/Create", jsonParams);
             //returns okay response with a redirect to viewing the tracks?
             return new JsonResult(new CreatePlaylistRequest { });
         }
