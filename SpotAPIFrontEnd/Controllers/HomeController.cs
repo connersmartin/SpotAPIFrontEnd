@@ -43,7 +43,7 @@ namespace SpotAPIFrontEnd.Controllers
                 baseUrl += "?client_id=" + _config.GetValue<string>("clientId");
                 baseUrl += "&response_type=code";
                 baseUrl += "&redirect_uri=" + _config.GetValue<string>("redirectUri");
-                baseUrl += "&scope=playlist-read-collaborative playlist-modify-public playlist-read-private playlist-modify-private";
+                baseUrl += "&scope=playlist-read-collaborative playlist-modify-public playlist-read-private playlist-modify-private user-read-email";
                 response = await client.GetAsync(baseUrl);                
             }
             return Redirect(response.RequestMessage.RequestUri.ToString());
