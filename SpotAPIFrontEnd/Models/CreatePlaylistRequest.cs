@@ -9,7 +9,7 @@ namespace SpotAPIFrontEnd.Models
     {
         public string Name { get; set; }
         public int Length { get; set; }
-        public List<string> Genres { get; set; }
+        public string[] Genres { get; set; }
         public string Artist { get; set; }
         public decimal Tempo { get; set; }
         public decimal Dance { get; set; }

@@ -10,7 +10,7 @@
     </div> 
 </div>
 <div id="SpotParams" hidden>
-    @Html.Partial("SpotParams", new CreatePlaylistRequest { Name = "test", Artist = "tester", Dance = 1, Energy=2, Instrumental=3, Length=4, Tempo=100 })
+    @Html.Partial("SpotParams", new CreatePlaylistRequest { Name = "test", Artist = "Green Day", Genres = new string[1]{ "Pop" }, Dance = 1.0m, Energy=0.2m, Instrumental=0.3m, Length=4, Tempo=100 })
 </div>
 
 <div id="ViewPlaylists">
