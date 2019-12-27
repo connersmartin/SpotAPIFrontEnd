@@ -7,6 +7,12 @@ if (document.cookie.indexOf('spotauthtoke')!==-1) {
 
 $("#showPartial").click(function () {
     $("#SpotParams").removeAttr("hidden");
+    $.ajax({
+        url: '/Home/SpotParams',
+        success: function (data) {
+            $("#SpotParams").html(data);
+        }
+    })
 });
 
 //ajax call for getting playlists

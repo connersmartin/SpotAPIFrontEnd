@@ -83,6 +83,18 @@ namespace SpotAPIFrontEnd.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SpotParams()
+        {
+            //get auth cookie
+            HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
+
+            var genres = await GenresToArray(auth).ConfigureAwait(true);
+            ViewData["genres"] = ArrayToSelectList(genres);
+            return PartialView();
+        }
+
         [HttpPost]
         public async Task<JsonResult> SpotParams(CreatePlaylistRequest spotParams)
         {
@@ -93,8 +105,9 @@ namespace SpotAPIFrontEnd.Controllers
             var jsonParams = JsonSerializer.Serialize(spotParams);
             //send to spot api
             var res = await _sas.Access("post", auth, "/Create", jsonParams).ConfigureAwait(true);
+
             //returns okay response with a redirect to viewing the tracks?
-            return new JsonResult(new CreatePlaylistRequest { });
+            return new JsonResult(new PlaylistResponse { });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -123,10 +136,19 @@ namespace SpotAPIFrontEnd.Controllers
                 _cache.Set("spotifyGenres", spotifyGenres);
 
             }
-
-
-
             return spotifyGenres.genres;
+        }
+
+        public List<SelectListItem> ArrayToSelectList(string[] items)
+        {
+            var list = new List<SelectListItem>();
+
+            foreach (var t in items)
+            {
+                list.Add(new SelectListItem(t,t));
+            }
+
+            return list;
         }
     }
 }
