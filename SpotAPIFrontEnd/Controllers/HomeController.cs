@@ -107,7 +107,7 @@ namespace SpotAPIFrontEnd.Controllers
             var res = await _sas.Access("post", auth, "/Create", jsonParams).ConfigureAwait(true);
 
             //returns okay response with a redirect to viewing the tracks?
-            return new JsonResult(new PlaylistResponse { });
+            return new JsonResult(res);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
