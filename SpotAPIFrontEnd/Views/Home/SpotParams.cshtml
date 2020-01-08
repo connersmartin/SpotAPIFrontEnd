@@ -4,7 +4,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="SpotParams" id="spotParams">
+        <form id="spotParams">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -47,12 +47,8 @@
                 <span asp-validation-for="Instrumental" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input id="getPlaylist" type="submit" value="Create" class="btn btn-primary" />
+                <span id="getPlaylist" type="submit" onclick="PostPlaylist()" value="Create" class="btn btn-primary"></span>
             </div>
         </form>
     </div>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

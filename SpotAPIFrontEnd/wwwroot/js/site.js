@@ -15,6 +15,26 @@ $("#showPartial").click(function () {
     })
 });
 
+function PostPlaylist() {
+
+    $.validator.unobtrusive.parse($("#spotParams"));
+    $("#spotParams").validate();
+    if ($("#spotParams").valid()) {
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/SpotParams",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify($("#spotParams").data),
+            success: function (data) {
+                $("#PlaylistResponse").html(data);
+            }
+
+        });
+
+    }
+}
+
 //ajax call for getting playlists
 
 //ajax call for getting tracks

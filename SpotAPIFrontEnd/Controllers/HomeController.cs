@@ -96,7 +96,7 @@ namespace SpotAPIFrontEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> SpotParams(CreatePlaylistRequest spotParams)
+        public async Task<JsonResult> SpotParams([FromBody] CreatePlaylistRequest spotParams)
         {
             //get auth cookie
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
