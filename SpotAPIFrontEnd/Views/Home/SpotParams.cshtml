@@ -28,22 +28,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="Tempo" class="control-label"></label>
-                <input asp-for="Tempo" class="form-control" />
+                <input asp-for="Tempo" class="form-control"/>
                 <span asp-validation-for="Tempo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Dance" class="control-label"></label>
-                <input asp-for="Dance" class="form-control" />
+                <select asp-for="Dance" asp-items=ViewBag.dance class="form-control"></select>
                 <span asp-validation-for="Dance" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Energy" class="control-label"></label>
-                <input asp-for="Energy" class="form-control" />
+                <select asp-for="Energy" asp-items=ViewBag.energy class="form-control"></select>
                 <span asp-validation-for="Energy" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Instrumental" class="control-label"></label>
-                <input asp-for="Instrumental" class="form-control" />
+                <select asp-for="Instrumental" asp-items=ViewBag.instrumental class="form-control"></select>
                 <span asp-validation-for="Instrumental" class="text-danger"></span>
             </div>
             <div class="form-group">

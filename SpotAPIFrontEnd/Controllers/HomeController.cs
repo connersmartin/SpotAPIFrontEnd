@@ -14,6 +14,7 @@ using System.Net.Http;
 using SpotAPIFrontEnd.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
+using System.Text;
 
 namespace SpotAPIFrontEnd.Controllers
 {
@@ -92,22 +93,32 @@ namespace SpotAPIFrontEnd.Controllers
 
             var genres = await GenresToArray(auth).ConfigureAwait(true);
             ViewData["genres"] = ArrayToSelectList(genres);
+            ViewData["dance"] = DecimalToSelectList();
+            ViewData["energy"] = DecimalToSelectList();
+            ViewData["instrumental"] = DecimalToSelectList();
             return PartialView();
         }
 
         [HttpPost]
-        public async Task<JsonResult> SpotParams([FromBody] CreatePlaylistRequest spotParams)
+        public async Task<IActionResult> SpotParams([FromBody] CreatePlaylistRequest spotParams)
         {
             //get auth cookie
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
+
+            spotParams.Tempo = spotParams.Tempo.Trim() == "" ? null : spotParams.Tempo;
+            spotParams.Dance = spotParams.Dance.Trim() == "" ? null : spotParams.Dance;
+            spotParams.Energy = spotParams.Energy.Trim() == "" ? null : spotParams.Energy;
+            spotParams.Instrumental = spotParams.Instrumental.Trim() == "" ? null : spotParams.Instrumental;
 
             //jsonify params
             var jsonParams = JsonSerializer.Serialize(spotParams);
             //send to spot api
             var res = await _sas.Access("post", auth, "/Create", jsonParams).ConfigureAwait(true);
-
+            //doesn't work yet
+            //get the response and be able to return a partial view
+            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(Encoding.UTF8.GetString(res));
             //returns okay response with a redirect to viewing the tracks?
-            return new JsonResult(res);
+            return PartialView("ViewPlaylist", new List<PlaylistResponse>() { playlistResponse });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -146,6 +157,18 @@ namespace SpotAPIFrontEnd.Controllers
             foreach (var t in items)
             {
                 list.Add(new SelectListItem(t,t));
+            }
+
+            return list;
+        }
+
+        public static List<SelectListItem> DecimalToSelectList()
+        {
+            var list = new List<SelectListItem>();
+            list.Add(new SelectListItem("n/a", ""));
+            for (var i = 0.0m; i<=1; i+=0.1m)
+            {
+                list.Add(new SelectListItem(i.ToString(), i.ToString()));
             }
 
             return list;
