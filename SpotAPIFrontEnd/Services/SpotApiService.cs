@@ -19,7 +19,7 @@ namespace SpotAPIFrontEnd.Services
             _logger = logger;
             _config = config;
         }
-        public async Task<byte[]> Access(string method,string auth, string path, string json)
+        public async Task<string> Access(string method,string auth, string path, string json)
         {
             var url = _config.GetValue<string>("spotServiceUrl");
             var response = new HttpResponseMessage();
@@ -42,7 +42,7 @@ namespace SpotAPIFrontEnd.Services
                         break;
                 }
             }
-            return await response.Content.ReadAsByteArrayAsync();
+            return await response.Content.ReadAsStringAsync();
         }
         
     }

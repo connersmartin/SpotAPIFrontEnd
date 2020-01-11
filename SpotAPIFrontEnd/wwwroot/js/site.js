@@ -6,7 +6,8 @@ if (document.cookie.indexOf('spotauthtoke')!==-1) {
 }
 
 $("#showPartial").click(function () {
-    $("#SpotParams").removeAttr("hidden");
+    $("#ViewPlaylists").hide();
+    $("#SpotParams").show();
     $.ajax({
         url: '/Home/SpotParams',
         success: function (data) {
@@ -39,12 +40,11 @@ function PostPlaylist() {
             type: "POST",
             url: "Home/SpotParams",
             contentType : 'application/json',
-            dataType: 'json',
             data: JSON.stringify(spotOb),
             success: function (data) {
-                $("#SpotParams").attr("hidden");
-
-                $("#PlaylistResponse").html(data);
+                $("#SpotParams").hide();
+                $("#ViewPlaylists").show();
+                $("#ViewPlaylists").html(data);
             }
 
         });
@@ -54,4 +54,27 @@ function PostPlaylist() {
 
 //ajax call for getting playlists
 
+$("#getPlaylists").click(function () {
+    $("#ViewTracks").hide();
+    $("#ViewPlaylists").show();
+    $.ajax({
+        url: '/Home/GetPlaylists',
+        success: function (data) {
+            $("#ViewPlaylists").html(data);
+        }
+    })
+});
+
 //ajax call for getting tracks
+function getPlaylist(id)
+{
+    $("#ViewPlaylists").hide();
+    $("#ViewTracks").show();
+    $.ajax({
+        url: '/Home/GetTracks',
+        data: id,
+        success: function (data) {
+            $("#ViewTracks").html(data);
+        }
+    })
+}

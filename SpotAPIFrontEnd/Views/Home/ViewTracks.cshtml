@@ -4,6 +4,9 @@
     <thead>
         <tr>
             <th>
+                Artists
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
@@ -17,6 +20,12 @@
         {
             @foreach (var item in Model) {
                     <tr>
+                        <td>
+                            @foreach (var artist in item.Artists)
+                            {
+                                @artist 
+                            }
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Title)
                         </td>

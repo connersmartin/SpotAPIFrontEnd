@@ -86,6 +86,22 @@ namespace SpotAPIFrontEnd.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetTracks(string id)
+        {
+            var trackList = new List<TrackResponse>();
+
+            return PartialView("ViewTracks", trackList);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPlaylists()
+        {
+            var playlistList = new List<PlaylistResponse>();
+
+            return PartialView("ViewPlaylists", playlistList);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> SpotParams()
         {
             //get auth cookie
@@ -114,11 +130,10 @@ namespace SpotAPIFrontEnd.Controllers
             var jsonParams = JsonSerializer.Serialize(spotParams);
             //send to spot api
             var res = await _sas.Access("post", auth, "/Create", jsonParams).ConfigureAwait(true);
-            //doesn't work yet
             //get the response and be able to return a partial view
-            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(Encoding.UTF8.GetString(res));
+            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(res, null);
             //returns okay response with a redirect to viewing the tracks?
-            return PartialView("ViewPlaylist", new List<PlaylistResponse>() { playlistResponse });
+            return PartialView("ViewPlaylists", new List<PlaylistResponse>() { playlistResponse });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
