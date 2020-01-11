@@ -89,6 +89,8 @@ namespace SpotAPIFrontEnd.Controllers
         public async Task<IActionResult> GetTracks(string id)
         {
             var trackList = new List<TrackResponse>();
+            
+            //make API call to get tracks for a specific playlist
 
             return PartialView("ViewTracks", trackList);
         }
@@ -97,6 +99,8 @@ namespace SpotAPIFrontEnd.Controllers
         public async Task<IActionResult> GetPlaylists()
         {
             var playlistList = new List<PlaylistResponse>();
+
+            //make api call to get all playlists
 
             return PartialView("ViewPlaylists", playlistList);
         }
