@@ -88,9 +88,15 @@ namespace SpotAPIFrontEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTracks(string id)
         {
+            //get auth cookie
+            HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
             var trackList = new List<TrackResponse>();
-            
+
             //make API call to get tracks for a specific playlist
+            var res = await _sas.Access("get", auth, "/Tracks", null).ConfigureAwait(true);
+            //get the response and be able to return a partial view
+            var tracksResponse = JsonSerializer.Deserialize<List<TrackResponse>>(res, null);
+            //returns okay response with a redirect to viewing the tracks?
 
             return PartialView("ViewTracks", trackList);
         }
@@ -98,11 +104,17 @@ namespace SpotAPIFrontEnd.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPlaylists()
         {
+            //get auth cookie
+            HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
             var playlistList = new List<PlaylistResponse>();
 
             //make api call to get all playlists
+            var res = await _sas.Access("get", auth, "/Playlist", null).ConfigureAwait(true);
+            //get the response and be able to return a partial view
+            var playlistResponse = JsonSerializer.Deserialize<List<PlaylistResponse>>(res, null);
+            //returns okay response with a redirect to viewing the tracks?
 
-            return PartialView("ViewPlaylists", playlistList);
+            return PartialView("ViewPlaylists", playlistResponse);
         }
 
         [HttpGet]
