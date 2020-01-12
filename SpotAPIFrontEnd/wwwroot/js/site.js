@@ -66,13 +66,12 @@ $("#getPlaylists").click(function () {
 });
 
 //ajax call for getting tracks
-function getPlaylist(id)
+function getTracks(id)
 {
     $("#ViewPlaylists").hide();
     $("#ViewTracks").show();
     $.ajax({
-        url: '/Home/GetTracks',
-        data: id,
+        url: '/Home/GetTracks/'+id,
         success: function (data) {
             $("#ViewTracks").html(data);
         }
