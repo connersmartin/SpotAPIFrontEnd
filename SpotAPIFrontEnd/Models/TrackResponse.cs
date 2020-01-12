@@ -9,11 +9,11 @@ namespace SpotAPIFrontEnd.Models
     public class TrackResponse
     {
         [JsonProperty("artists")]
-        public string Artists { get; set; }
+        public string artists { get; set; }
         [JsonProperty("title")]
-        public string Title { get; set; }
+        public string title { get; set; }
         [JsonProperty("length")] 
-        public int Length { get; set; }
+        public int length { get; set; }
    
     }
 }

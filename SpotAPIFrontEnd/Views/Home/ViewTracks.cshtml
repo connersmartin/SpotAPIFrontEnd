@@ -7,10 +7,10 @@
                 Artists
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Length)
+                @Html.DisplayNameFor(model => model.length)
             </th>
             <th></th>
         </tr>
@@ -21,16 +21,16 @@
             @foreach (var item in Model) {
                     <tr>
                         <td>
-                            @foreach (var artist in item.Artists)
+                            @foreach (var artist in item.artists)
                             {
                                 @artist 
                             }
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Title)
+                            @Html.DisplayFor(modelItem => item.title)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Length)
+                            @Html.DisplayFor(modelItem => item.length)
                         </td>
                     </tr>
             }
