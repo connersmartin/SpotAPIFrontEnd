@@ -31,13 +31,14 @@ namespace SpotAPIFrontEnd.Controllers
             _config = config;
             _sas = sas;
         }
-
+        //Default View      
         public IActionResult Index()
         {     
             return View();
                         
         }
-
+        
+        //Auth workflow
         public async Task<RedirectResult> Auth()
         {
             HttpResponseMessage response = new HttpResponseMessage();
@@ -54,7 +55,7 @@ namespace SpotAPIFrontEnd.Controllers
             return Redirect(response.RequestMessage.RequestUri.ToString());
         }
 
-
+        //Second part of auth workflow
         public async Task<IActionResult> CodeToken()
         {
             if (Request.Query.ContainsKey("code"))
@@ -85,6 +86,7 @@ namespace SpotAPIFrontEnd.Controllers
             return RedirectToAction("Index");
         }
 
+        //Gets tracks of a given playlist by the playlist's Spotify ID
         [HttpGet]
         public async Task<IActionResult> GetTracks(string id)
         {
@@ -92,28 +94,20 @@ namespace SpotAPIFrontEnd.Controllers
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
             var trackList = new List<TrackResponse>();
 
-            var jsonParams = JsonSerializer.Serialize(new Dictionary<string, string>() { { "id", id }  });
+            var jsonParams = JsonSerializer.Serialize(new Dictionary<string, string>() { { "id", id } });
             //make API call to get tracks for a specific playlist
-            //var res = await _sas.Access("post", auth, "/Tracks", jsonParams).ConfigureAwait(true);
+            var res = await _sas.Access("post", auth, "/Tracks", jsonParams).ConfigureAwait(true);
 
-            var res = "[{\"artists\":\"Tito Puente\",\"title\":\"Salsa Y Sabor\",\"length\":181093},{\"artists\":\"Eddie Palmieri\",\"title\":\"Condiciones Que Existen\",\"length\":245666},{\"artists\":\"CNCO\",\"title\":\"Hey DJ\",\"length\":206920},{\"artists\":\"The Skatalites\",\"title\":\"The Guns of Navarone\",\"length\":407293},{\"artists\":\"Voodoo Glow Skulls\",\"title\":\"El Coo Cooi\",\"length\":157306},{\"artists\":\"Dasoul\",\"title\":\"Kung Fu\",\"length\":234280},{\"artists\":\"The Upsetters\",\"title\":\"Return of Django\",\"length\":149453},{\"artists\":\"Transplants\",\"title\":\"What I Can't Describe\",\"length\":242088},{\"artists\":\"Big D and the Kids Table\",\"title\":\"Shining On\",\"length\":194093},{\"artists\":\"The Skatalites\",\"title\":\"James Bond\",\"length\":187946},{\"artists\":\"Willie Bobo\",\"title\":\"Dig My Feeling\",\"length\":220198},{\"artists\":\"Ana Guerra\",\"title\":\"Ni La Hora\",\"length\":198406},{\"artists\":\"Harry J Allstars\",\"title\":\"Liquidator\",\"length\":172520},{\"artists\":\"KAROL G\",\"title\":\"Hello\",\"length\":195040},{\"artists\":\"Natti Natasha\",\"title\":\"Criminal\",\"length\":232549},{\"artists\":\"The Skatalites\",\"title\":\"Fugitive Dub\",\"length\":199552},{\"artists\":\"Felipe Peláez\",\"title\":\"Vivo Pensando En Ti (feat. Maluma)\",\"length\":232560},{\"artists\":\"Maluma\",\"title\":\"Felices los 4 (feat. Marc Anthony) - Salsa Version\",\"length\":242373},{\"artists\":\"Sonora Carruseles\",\"title\":\"Arranca en Fá\",\"length\":216120},{\"artists\":\"Voodoo Glow Skulls\",\"title\":\"Shoot the Moon\",\"length\":193146},{\"artists\":\"Ozuna\",\"title\":\"Vaina Loca\",\"length\":176133},{\"artists\":\"Mad Caddies\",\"title\":\"... and We Thought That Nation-States Were a Bad Idea\",\"length\":194658},{\"artists\":\"Luis Fonsi\",\"title\":\"Imposible\",\"length\":163880},{\"artists\":\"The Skatalites\",\"title\":\"Twelve Minutes To Go\",\"length\":186000},{\"artists\":\"Manu Chao\",\"title\":\"Me Gustas Tu\",\"length\":239986},{\"artists\":\"Don Omar\",\"title\":\"Te Quiero Pa´Mi\",\"length\":211626},{\"artists\":\"Streetlight Manifesto\",\"title\":\"Point / Counterpoint\",\"length\":327920},{\"artists\":\"Mad Caddies\",\"title\":\"State of Mind\",\"length\":226506},{\"artists\":\"Yandel\",\"title\":\"Mi Religión\",\"length\":237613},{\"artists\":\"The Skatalites\",\"title\":\"River Bank\",\"length\":327706},{\"artists\":\"Khea\",\"title\":\"Loca - Remix\",\"length\":346460},{\"artists\":\"Mongo Santamaria\",\"title\":\"Linda Guajira\",\"length\":183800},{\"artists\":\"Cachao\",\"title\":\"Oye Mis Tres Montunos\",\"length\":164812},{\"artists\":\"Bad Manners\",\"title\":\"Special Brew\",\"length\":135320},{\"artists\":\"Less Than Jake\",\"title\":\"The Science of Selling Yourself Short\",\"length\":186266},{\"artists\":\"Gerardo Ortiz\",\"title\":\"Recordando a Manuel\",\"length\":214453},{\"artists\":\"The Skatalites\",\"title\":\"Street Corner\",\"length\":184973},{\"artists\":\"Prince Royce\",\"title\":\"Deja vu\",\"length\":196480},{\"artists\":\"Poncho Sanchez\",\"title\":\"Bésame Mama\",\"length\":393106},{\"artists\":\"Big D and the Kids Table\",\"title\":\"Not Fuckin' Around\",\"length\":214133},{\"artists\":\"Mad Caddies\",\"title\":\"Sorrow\",\"length\":208730},{\"artists\":\"Sebastian Yatra\",\"title\":\"Traicionera - Remix\",\"length\":209320},{\"artists\":\"Eddie Palmieri\",\"title\":\"Vámonos Pa'l Monte\",\"length\":426840}]";
 
-            try
-            {
+            //get the response and be able to return a partial view NOT WORKING
+            trackList = JsonSerializer.Deserialize<List<TrackResponse>>(res, null);
+            //returns okay response with a redirect to viewing the tracks?
 
-                //get the response and be able to return a partial view NOT WORKING
-                trackList = JsonSerializer.Deserialize<List<TrackResponse>>(res, null);
-                //returns okay response with a redirect to viewing the tracks?
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
 
             return PartialView("ViewTracks", trackList);
         }
 
+        //Get playlists for current user
         [HttpGet]
         public async Task<IActionResult> GetPlaylists()
         {
@@ -130,6 +124,7 @@ namespace SpotAPIFrontEnd.Controllers
             return PartialView("ViewPlaylists", playlistResponse);
         }
 
+        //View to show parameters for playlist creation
         [HttpGet]
         public async Task<IActionResult> SpotParams()
         {
@@ -144,16 +139,17 @@ namespace SpotAPIFrontEnd.Controllers
             return PartialView();
         }
 
+        //Creates the playlist in spotify with the provided parameters
         [HttpPost]
         public async Task<IActionResult> SpotParams([FromBody] CreatePlaylistRequest spotParams)
         {
             //get auth cookie
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
 
-            spotParams.Tempo = spotParams.Tempo.Trim() == "" ? null : spotParams.Tempo;
-            spotParams.Dance = spotParams.Dance.Trim() == "" ? null : spotParams.Dance;
-            spotParams.Energy = spotParams.Energy.Trim() == "" ? null : spotParams.Energy;
-            spotParams.Instrumental = spotParams.Instrumental.Trim() == "" ? null : spotParams.Instrumental;
+            spotParams.Tempo = spotParams.Tempo.Trim().Length == 0 ? null : spotParams.Tempo;
+            spotParams.Dance = spotParams.Dance.Trim().Length == 0 ? null : spotParams.Dance;
+            spotParams.Energy = spotParams.Energy.Trim().Length == 0 ? null : spotParams.Energy;
+            spotParams.Instrumental = spotParams.Instrumental.Trim().Length == 0 ? null : spotParams.Instrumental;
 
             //jsonify params
             var jsonParams = JsonSerializer.Serialize(spotParams);
@@ -171,8 +167,10 @@ namespace SpotAPIFrontEnd.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        //Get's spotify's current genres
         public async Task<string[]> GenresToArray(string auth)
         {
+            //cache the genres to limit api calls
             var spotifyGenres = new GenreResponse();
             if (!_cache.TryGetValue("spotifyGenres", out spotifyGenres))
             {
@@ -193,7 +191,7 @@ namespace SpotAPIFrontEnd.Controllers
             }
             return spotifyGenres.genres;
         }
-
+        //Helper function
         public List<SelectListItem> ArrayToSelectList(string[] items)
         {
             var list = new List<SelectListItem>();
@@ -205,7 +203,7 @@ namespace SpotAPIFrontEnd.Controllers
 
             return list;
         }
-
+        //Helper function
         public static List<SelectListItem> DecimalToSelectList()
         {
             var list = new List<SelectListItem>();

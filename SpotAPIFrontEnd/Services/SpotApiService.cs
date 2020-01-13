@@ -19,6 +19,7 @@ namespace SpotAPIFrontEnd.Services
             _logger = logger;
             _config = config;
         }
+        //Call to interact with spotify service
         public async Task<string> Access(string method,string auth, string path, string json)
         {
             var url = _config.GetValue<string>("spotServiceUrl");
