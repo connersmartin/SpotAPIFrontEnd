@@ -99,7 +99,7 @@ namespace SpotAPIFrontEnd.Controllers
             var res = await _sas.Access("post", auth, "/Tracks", jsonParams).ConfigureAwait(true);
 
 
-            //get the response and be able to return a partial view NOT WORKING
+            //get the response and be able to return a partial view
             trackList = JsonSerializer.Deserialize<List<TrackResponse>>(res, null);
             //returns okay response with a redirect to viewing the tracks?
 
@@ -159,6 +159,15 @@ namespace SpotAPIFrontEnd.Controllers
             var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(res, null);
             //returns okay response with a redirect to viewing the tracks?
             return PartialView("ViewPlaylists", new List<PlaylistResponse>() { playlistResponse });
+        }
+
+        public async Task<IActionResult> DeletePlaylist(string id)
+        {
+            //get auth cookie
+            HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
+            var res = await _sas.Access("get", auth, "/Delete?id="+id, null);
+
+            return RedirectToAction("GetPlaylists");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

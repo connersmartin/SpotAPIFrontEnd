@@ -71,9 +71,19 @@ function getTracks(id)
     $("#ViewPlaylists").hide();
     $("#ViewTracks").show();
     $.ajax({
-        url: '/Home/GetTracks/'+id,
-        success: function (data) {
+        url: '/Home/GetTracks/' + id,
+        success: function(data) {
             $("#ViewTracks").html(data);
         }
-    })
+    });
+}
+
+function deletePlaylist(id) {
+    
+    $.ajax({
+        url: '/Home/DeletePlaylist/' + id,
+        success: function(data) {
+            $("#ViewPlaylists").html(data);
+        }
+    });
 }
