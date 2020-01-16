@@ -22,7 +22,7 @@ function PostPlaylist() {
     $("#spotParams").validate();
     if ($("#spotParams").valid()) {
         var submitData = $("#spotParams")['0'];
-        var genreList = []
+        var genreList = [];
         for (var i = 0; i < submitData.Genres.selectedOptions.length; i++) {
             genreList.push(submitData.Genres.selectedOptions[i].value);
         }
@@ -55,6 +55,7 @@ function PostPlaylist() {
 //ajax call for getting playlists
 
 $("#getPlaylists").click(function () {
+    $("#SpotParams").hide();
     $("#ViewTracks").hide();
     $("#ViewPlaylists").show();
     $.ajax({
@@ -68,6 +69,7 @@ $("#getPlaylists").click(function () {
 //ajax call for getting tracks
 function getTracks(id)
 {
+    $("#SpotParams").hide();
     $("#ViewPlaylists").hide();
     $("#ViewTracks").show();
     $.ajax({
@@ -78,11 +80,11 @@ function getTracks(id)
     });
 }
 
-function deletePlaylist(id) {
-    
+function deletePlaylist(id) {    
     $.ajax({
         url: '/Home/DeletePlaylist/' + id,
-        success: function(data) {
+        success: function (data) {
+            $("#ViewPlaylists").show();
             $("#ViewPlaylists").html(data);
         }
     });

@@ -156,7 +156,18 @@ namespace SpotAPIFrontEnd.Controllers
             //send to spot api
             var res = await _sas.Access("post", auth, "/Create", jsonParams).ConfigureAwait(true);
             //get the response and be able to return a partial view
-            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(res, null);
+            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(res, null);    
+
+            if (playlistResponse.TrackCount == 0)
+            {
+                playlistResponse.Title = "Huh, maybe delete this one, nothing was added for " + playlistResponse.Title;
+            }
+
+            if (playlistResponse.Length < spotParams.Length-(30*60*1000))
+            {
+                playlistResponse.Title = "Just FYI, your choices allowed " + playlistResponse.Title + " to not fully populate";
+            }
+
             //returns okay response with a redirect to viewing the tracks?
             return PartialView("ViewPlaylists", new List<PlaylistResponse>() { playlistResponse });
         }
