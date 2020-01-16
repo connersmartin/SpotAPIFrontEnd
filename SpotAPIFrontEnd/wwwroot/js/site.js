@@ -55,9 +55,11 @@ function PostPlaylist() {
 //ajax call for getting playlists
 
 $("#getPlaylists").click(function () {
+
     $("#SpotParams").hide();
     $("#ViewTracks").hide();
     $("#ViewPlaylists").show();
+    $("#ViewPlaylists").html("This may take a while, be patient");
     $.ajax({
         url: '/Home/GetPlaylists',
         success: function (data) {
