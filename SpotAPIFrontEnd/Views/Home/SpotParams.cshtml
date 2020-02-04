@@ -42,9 +42,9 @@
                 <span asp-validation-for="Energy" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">How Instrumental?</label>
-                <select asp-for="Instrumental" asp-items=ViewBag.instrumental class="form-control"></select>
-                <span asp-validation-for="Instrumental" class="text-danger"></span>
+                <label class="control-label">How Happy?</label>
+                <select asp-for="Valence" asp-items=ViewBag.valence class="form-control"></select>
+                <span asp-validation-for="Valence" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <span id="getPlaylist" type="submit" onclick="PostPlaylist()" value="Create" class="btn btn-primary">Create Playlist</span>

@@ -149,7 +149,7 @@ namespace SpotAPIFrontEnd.Controllers
             spotParams.Tempo = spotParams.Tempo.Trim().Length == 0 ? null : spotParams.Tempo;
             spotParams.Dance = spotParams.Dance.Trim().Length == 0 ? null : spotParams.Dance;
             spotParams.Energy = spotParams.Energy.Trim().Length == 0 ? null : spotParams.Energy;
-            spotParams.Instrumental = spotParams.Instrumental.Trim().Length == 0 ? null : spotParams.Instrumental;
+            spotParams.Valence = spotParams.Valence.Trim().Length == 0 ? null : spotParams.Valence;
 
             //jsonify params
             var jsonParams = JsonSerializer.Serialize(spotParams);

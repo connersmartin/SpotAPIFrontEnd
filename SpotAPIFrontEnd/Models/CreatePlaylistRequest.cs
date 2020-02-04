@@ -17,7 +17,7 @@ namespace SpotAPIFrontEnd.Models
         public string Tempo { get; set; }
         public string Dance { get; set; }
         public string Energy { get; set; }
-        public string Instrumental { get; set; }
+        public string Valence { get; set; }
 
     }
 }
