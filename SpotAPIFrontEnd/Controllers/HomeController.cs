@@ -126,7 +126,7 @@ namespace SpotAPIFrontEnd.Controllers
 
         //View to show parameters for playlist creation
         [HttpGet]
-        public async Task<IActionResult> SpotParams()
+        public async Task<IActionResult> SpotParams(string id = null)
         {
             //get auth cookie
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
@@ -135,8 +135,8 @@ namespace SpotAPIFrontEnd.Controllers
             ViewData["genres"] = ArrayToSelectList(genres);
             ViewData["dance"] = DecimalToSelectList();
             ViewData["energy"] = DecimalToSelectList();
-            ViewData["instrumental"] = DecimalToSelectList();
-            return PartialView();
+            ViewData["valence"] = DecimalToSelectList();
+            return PartialView(new CreatePlaylistRequest() { Id = id });
         }
 
         //Creates the playlist in spotify with the provided parameters

@@ -23,10 +23,12 @@ function PostPlaylist() {
     if ($("#spotParams").valid()) {
         var submitData = $("#spotParams")['0'];
         var genreList = [];
+
         for (var i = 0; i < submitData.Genres.selectedOptions.length; i++) {
             genreList.push(submitData.Genres.selectedOptions[i].value);
         }
         var spotOb = new Object();
+        spotOb.Id = submitData.Id.value;
         spotOb.name = submitData.Name.value;
         spotOb.length = parseInt(submitData.Length.value);
         spotOb.genres = genreList;
@@ -34,7 +36,7 @@ function PostPlaylist() {
         spotOb.tempo =  submitData.Tempo.value;
         spotOb.dance = submitData.Dance.value;
         spotOb.energy = submitData.Energy.value;
-        spotOb.instrumental = submitData.Instrumental.value;
+        spotOb.valence = submitData.Valence.value;
 
         $.ajax({
             type: "POST",
@@ -78,6 +80,18 @@ function getTracks(id)
         url: '/Home/GetTracks/' + id,
         success: function(data) {
             $("#ViewTracks").html(data);
+        }
+    });
+}
+
+function newPlaylist(id) {
+    $("#SpotParams").show();
+    $("#ViewPlaylists").hide();
+    $("#ViewTracks").hide();
+    $.ajax({
+        url: '/Home/SpotParams/' + id,
+        success: function (data) {
+            $("#SpotParams").html(data);
         }
     });
 }
