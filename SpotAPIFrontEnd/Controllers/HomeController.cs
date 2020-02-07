@@ -146,6 +146,11 @@ namespace SpotAPIFrontEnd.Controllers
             //get auth cookie
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
 
+            if (!string.IsNullOrEmpty(spotParams.Id))
+            {
+                spotParams.AudioFeatures = true;
+            }
+
             spotParams.Tempo = spotParams.Tempo.Trim().Length == 0 ? null : spotParams.Tempo;
             spotParams.Dance = spotParams.Dance.Trim().Length == 0 ? null : spotParams.Dance;
             spotParams.Energy = spotParams.Energy.Trim().Length == 0 ? null : spotParams.Energy;
