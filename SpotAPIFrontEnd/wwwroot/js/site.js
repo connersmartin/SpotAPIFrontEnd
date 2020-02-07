@@ -22,22 +22,23 @@ function PostPlaylist() {
     $("#spotParams").validate();
     if ($("#spotParams").valid()) {
         var submitData = $("#spotParams")['0'];
-        var genreList = [];
-
-        for (var i = 0; i < submitData.Genres.selectedOptions.length; i++) {
-            genreList.push(submitData.Genres.selectedOptions[i].value);
-        }
         var spotOb = new Object();
         spotOb.Id = submitData.Id.value;
         spotOb.name = submitData.Name.value;
         spotOb.length = parseInt(submitData.Length.value);
-        spotOb.genres = genreList;
-        spotOb.artist = submitData.Artist.value;
-        spotOb.tempo =  submitData.Tempo.value;
-        spotOb.dance = submitData.Dance.value;
-        spotOb.energy = submitData.Energy.value;
-        spotOb.valence = submitData.Valence.value;
+        if (spotOb.Id == "") {
+            var genreList = [];
 
+            for (var i = 0; i < submitData.Genres.selectedOptions.length; i++) {
+                genreList.push(submitData.Genres.selectedOptions[i].value);
+            }
+            spotOb.genres = genreList;
+            spotOb.artist = submitData.Artist.value;
+            spotOb.tempo = submitData.Tempo.value;
+            spotOb.dance = submitData.Dance.value;
+            spotOb.energy = submitData.Energy.value;
+            spotOb.valence = submitData.Valence.value;
+        }
         $.ajax({
             type: "POST",
             url: "Home/SpotParams",
