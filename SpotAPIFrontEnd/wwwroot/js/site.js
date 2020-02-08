@@ -13,7 +13,7 @@ $("#showPartial").click(function () {
         success: function (data) {
             $("#SpotParams").html(data);
         }
-    })
+    });
 });
 
 function PostPlaylist() {
@@ -26,7 +26,7 @@ function PostPlaylist() {
         spotOb.Id = submitData.Id.value;
         spotOb.name = submitData.Name.value;
         spotOb.length = parseInt(submitData.Length.value);
-        if (spotOb.Id == "") {
+        if (spotOb.Id === "") {
             var genreList = [];
 
             for (var i = 0; i < submitData.Genres.selectedOptions.length; i++) {
@@ -48,6 +48,9 @@ function PostPlaylist() {
                 $("#SpotParams").hide();
                 $("#ViewPlaylists").show();
                 $("#ViewPlaylists").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $("#ViewPlaylists").html("Oops, something went wrong, please check to see if the playlist was made: " + XMLHttpRequest.responseText);
             }
 
         });
@@ -67,8 +70,11 @@ $("#getPlaylists").click(function () {
         url: '/Home/GetPlaylists',
         success: function (data) {
             $("#ViewPlaylists").html(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#ViewPlaylists").html("Oops, something went wrong, please try again: "+XMLHttpRequest.responseText);
         }
-    })
+    });
 });
 
 //ajax call for getting tracks
@@ -81,6 +87,9 @@ function getTracks(id)
         url: '/Home/GetTracks/' + id,
         success: function(data) {
             $("#ViewTracks").html(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#ViewTracks").html("Oops, something went wrong, please try again: " + XMLHttpRequest.responseText);
         }
     });
 }
@@ -93,6 +102,9 @@ function newPlaylist(id) {
         url: '/Home/SpotParams/' + id,
         success: function (data) {
             $("#SpotParams").html(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#SpotParams").html("Oops, something went wrong, please try again: " + XMLHttpRequest.responseText);
         }
     });
 }
@@ -103,6 +115,9 @@ function deletePlaylist(id) {
         success: function (data) {
             $("#ViewPlaylists").show();
             $("#ViewPlaylists").html(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#ViewPlaylists").html("Oops, something went wrong, please try again: " + XMLHttpRequest.responseText);
         }
     });
 }
