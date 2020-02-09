@@ -151,10 +151,10 @@ namespace SpotAPIFrontEnd.Controllers
                 spotParams.AudioFeatures = true;
             }
 
-            spotParams.Tempo = spotParams.Tempo.Trim().Length == 0 ? null : spotParams.Tempo;
-            spotParams.Dance = spotParams.Dance.Trim().Length == 0 ? null : spotParams.Dance;
-            spotParams.Energy = spotParams.Energy.Trim().Length == 0 ? null : spotParams.Energy;
-            spotParams.Valence = spotParams.Valence.Trim().Length == 0 ? null : spotParams.Valence;
+            spotParams.Tempo = string.IsNullOrEmpty(spotParams.Tempo) ? null : spotParams.Tempo.Trim();
+            spotParams.Dance = string.IsNullOrEmpty(spotParams.Dance) ? null : spotParams.Dance.Trim();
+            spotParams.Energy = string.IsNullOrEmpty(spotParams.Energy) ? null : spotParams.Energy.Trim();
+            spotParams.Valence = string.IsNullOrEmpty(spotParams.Valence) ? null : spotParams.Valence.Trim();
 
             //jsonify params
             var jsonParams = JsonSerializer.Serialize(spotParams);
