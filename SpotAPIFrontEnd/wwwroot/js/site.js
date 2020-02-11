@@ -93,6 +93,29 @@ function getTracks(id)
         }
     });
 }
+//ajax call to make liked songs playlist
+$("#getSavedTracks").click(function () {
+    $("#SpotParams").hide();
+    $("#ViewTracks").hide();
+    $("#ViewPlaylists").show();
+    $("#ViewPlaylists").html("This may take a while, be patient");
+    var spotOb = new Object();
+    spotOb.SavedTracks = true;
+    $.ajax({
+        type: "POST",
+        url: "Home/SpotParams",
+        contentType: 'application/json',
+        data: JSON.stringify(spotOb),
+        success: function (data) {
+            $("#SpotParams").hide();
+            $("#ViewPlaylists").show();
+            $("#ViewPlaylists").html(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#ViewPlaylists").html("Oops, something went wrong, please check to see if the playlist was made: " + XMLHttpRequest.responseText);
+        }
+    });
+});
 
 function newPlaylist(id) {
     $("#SpotParams").show();
