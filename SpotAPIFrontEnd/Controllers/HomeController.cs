@@ -168,7 +168,7 @@ namespace SpotAPIFrontEnd.Controllers
                 playlistResponse.Title = "Huh, maybe delete this one, nothing was added for " + playlistResponse.Title;
             }
 
-            if (playlistResponse.Length < spotParams.Length-(30*60*1000))
+            if (playlistResponse.Length < spotParams.Length*.90)
             {
                 playlistResponse.Title = "Just FYI, your choices allowed " + playlistResponse.Title + " to not fully populate";
             }
@@ -190,6 +190,12 @@ namespace SpotAPIFrontEnd.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+
         }
 
         //Get's spotify's current genres
@@ -217,7 +223,7 @@ namespace SpotAPIFrontEnd.Controllers
             return spotifyGenres.genres;
         }
         //Helper function
-        public List<SelectListItem> ArrayToSelectList(string[] items)
+        public static List<SelectListItem> ArrayToSelectList(string[] items)
         {
             var list = new List<SelectListItem>();
 
@@ -235,7 +241,7 @@ namespace SpotAPIFrontEnd.Controllers
             list.Add(new SelectListItem("n/a", ""));
             for (var i = 0.0m; i<=1; i+=0.1m)
             {
-                list.Add(new SelectListItem(i.ToString(), i.ToString()));
+                list.Add(new SelectListItem(((int)(i*10)).ToString(), i.ToString()));
             }
 
             return list;
