@@ -35,7 +35,7 @@ namespace SpotAPIFrontEnd.Services
                         response = await client.GetAsync(url + path);
                         break;
                     case "post":
-                        var postParams = new StringContent(json, Encoding.UTF8, "application/json");
+                        var postParams = json == null ? null : new StringContent(json, Encoding.UTF8, "application/json");
                         response = await client.PostAsync(url + path, postParams);
                         break;
                     default:

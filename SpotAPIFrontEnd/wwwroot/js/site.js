@@ -3,6 +3,7 @@
 });
 if (document.cookie.indexOf('spotauthtoke')!==-1) {
     $("#initLink").removeAttr("hidden");
+    $("#authBtn").text("Authorized");
 }
 
 $("#showPartial").click(function () {
@@ -17,7 +18,7 @@ $("#showPartial").click(function () {
     });
 });
 
-var errorText = "Oops, something went wrong, please click 'Do it' and try again: ";
+var errorText = "Oops, something went wrong, please click 'Do it' and try again. If the problem persists please contact me";
 
 function PostPlaylist() {
     $('#initLink').hide();
@@ -55,7 +56,7 @@ function PostPlaylist() {
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 $('#initLink').show();
-                $("#ViewPlaylists").html("Oops, something went wrong, please check to see if the playlist was made: " + XMLHttpRequest.responseText);
+                $("#ViewPlaylists").html("Oops, something went wrong, please check to see if the playlist was made");
             }
 
         });
@@ -76,7 +77,25 @@ $("#getPlaylists").click(function () {
             $("#ViewPlaylists").html(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $("#ViewPlaylists").html(errorText+XMLHttpRequest.responseText);
+            $("#ViewPlaylists").html(errorText);
+        }
+    });
+});
+
+//ajax call to only get playlists
+
+$("#updatePlaylist").click(function () {
+    $("#SpotParams").hide();
+    $("#ViewTracks").hide();
+    $("#ViewPlaylists").show();
+    $("#ViewPlaylists").html("This may take a while, be patient. We are gathering all of your playlists and their associated tracks.");
+    $.ajax({
+        url: '/Home/GetPlaylists?playListOnly=true',
+        success: function (data) {
+            $("#ViewPlaylists").html(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#ViewPlaylists").html(errorText);
         }
     });
 });
@@ -93,35 +112,37 @@ function getTracks(id)
             $("#ViewTracks").html(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $("#ViewTracks").html(errorText + XMLHttpRequest.responseText);
+            $("#ViewTracks").html(errorText);
         }
     });
 }
 //ajax call to make liked songs playlist
 $("#getSavedTracks").click(function () {
-    $('#initLink').hide();
-    $("#SpotParams").hide();
-    $("#ViewTracks").hide();
-    $("#ViewPlaylists").show();
-    $("#ViewPlaylists").html("This may take a while, be patient. We are petitioning Spotify's API to convert all your saved tracks into an actual playlist.");
-    var spotOb = new Object();
-    spotOb.SavedTracks = true;
-    $.ajax({
-        type: "POST",
-        url: "Home/SpotParams",
-        contentType: 'application/json',
-        data: JSON.stringify(spotOb),
-        success: function (data) {
-            $('#initLink').show();
-            $("#SpotParams").hide();
-            $("#ViewPlaylists").show();
-            $("#ViewPlaylists").html(data);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $('#initLink').show();
-            $("#ViewPlaylists").html("Oops, something went wrong, please check to see if the playlist was made: " + XMLHttpRequest.responseText);
-        }
-    });
+    if (window.confirm('Click ok to create a new playlist based off your liked songs')) {
+        $('#initLink').hide();
+        $("#SpotParams").hide();
+        $("#ViewTracks").hide();
+        $("#ViewPlaylists").show();
+        $("#ViewPlaylists").html("This may take a while, be patient. We are petitioning Spotify's API to convert all your saved tracks into an actual playlist.");
+        var spotOb = new Object();
+        spotOb.SavedTracks = true;
+        $.ajax({
+            type: "POST",
+            url: "Home/SpotParams",
+            contentType: 'application/json',
+            data: JSON.stringify(spotOb),
+            success: function (data) {
+                $('#initLink').show();
+                $("#SpotParams").hide();
+                $("#ViewPlaylists").show();
+                $("#ViewPlaylists").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $('#initLink').show();
+                $("#ViewPlaylists").html("Oops, something went wrong, please check to see if the playlist was made");
+            }
+        });
+    }
 });
 
 function newPlaylist(id) {
@@ -134,20 +155,57 @@ function newPlaylist(id) {
             $("#SpotParams").html(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $("#SpotParams").html(errorText + XMLHttpRequest.responseText);
+            $("#SpotParams").html(errorText);
         }
     });
 }
 
-function deletePlaylist(id) {    
+function updatePlaylist(id) {
+    $("#ViewPlaylists").hide();
+    $("#SpotParams").hide();
+    $("#ViewTracks").show();
+    $("#ViewTracks").html("This may take a while, be patient. We are petitioning Spotify's API.");
     $.ajax({
-        url: '/Home/DeletePlaylist/' + id,
+        url: '/Home/UpdatePlaylist/' + id,
         success: function (data) {
-            $("#ViewPlaylists").show();
-            $("#ViewPlaylists").html(data);
+            $("#ViewTracks").html(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $("#ViewPlaylists").html(errorText + XMLHttpRequest.responseText);
+            $("#ViewTracks").html(errorText);
         }
     });
+}
+
+
+function copyPlaylist(id) {
+    if (window.confirm('Do you really want to copy this playlist?')) {
+        $("#ViewPlaylists").hide();
+        $("#SpotParams").hide();
+        $("#ViewTracks").show();
+        $("#ViewTracks").html("This may take a while, be patient. We are petitioning Spotify's API.");
+        $.ajax({
+            url: '/Home/CopyPlaylist/' + id,
+            success: function (data) {
+                $("#ViewTracks").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $("#ViewTracks").html(errorText);
+            }
+        });
+    }
+}
+
+function deletePlaylist(id) {
+    if (window.confirm('Do you really want to delete/unfollow this playlist?')) {
+        $.ajax({
+            url: '/Home/DeletePlaylist/' + id,
+            success: function (data) {
+                $("#ViewPlaylists").show();
+                $("#ViewPlaylists").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $("#ViewPlaylists").html(errorText + XMLHttpRequest.responseText);
+            }
+        });
+    }
 }

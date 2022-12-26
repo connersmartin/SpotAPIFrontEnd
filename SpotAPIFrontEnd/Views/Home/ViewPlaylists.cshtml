@@ -6,34 +6,23 @@
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TrackCount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Length)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @if (!(Model==null))
+        @if (!(Model == null))
         {
-                @foreach (var item in Model) {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Title)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.TrackCount)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Length)
-                            </td>
-                            <td>
-                                <a href="#" onclick=getTracks('@item.Id')>Get Tracks</a> | <a href="#" onclick=deletePlaylist('@item.Id')>Delete</a> | <a href="#" onclick=newPlaylist('@item.Id')>Create a new playlist like this one</a>
-                            </td>
-                        </tr>
-                }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>                  
+                    <td>
+                        <a href="#" onclick=getTracks('@item.Id')>Get Tracks</a> | <a href="#" onclick=deletePlaylist('@item.Id')>Delete</a> | <a href="#" onclick=newPlaylist('@item.Id')>Create a new playlist like this one</a> |  <a href="#" onclick=copyPlaylist('@item.Id')>Copy this playlist</a>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

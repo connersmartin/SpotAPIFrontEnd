@@ -47,6 +47,7 @@ namespace SpotAPIFrontEnd.Controllers
                 var baseUrl = "https://accounts.spotify.com/authorize";
                 baseUrl += "?client_id=" + _config.GetValue<string>("clientId");
                 baseUrl += "&response_type=code";
+                baseUrl += "&show_dialog=true";
                 baseUrl += "&redirect_uri=" + _config.GetValue<string>("redirectUri");
                 baseUrl += "&scope=playlist-read-collaborative playlist-modify-public playlist-read-private playlist-modify-private user-read-email user-library-read";
                 var baseUri = new Uri(baseUrl);
@@ -96,27 +97,52 @@ namespace SpotAPIFrontEnd.Controllers
 
             var jsonParams = JsonSerializer.Serialize(new Dictionary<string, string>() { { "id", id } });
             //make API call to get tracks for a specific playlist
-            var res = await _sas.Access("post", auth, "/Tracks", jsonParams).ConfigureAwait(true);
+            var res = await _sas.Access("post", auth, "/Tracks", jsonParams).ConfigureAwait(false);
+            var plRes = await _sas.Access("get", auth, "/Playlist?id="+id, jsonParams).ConfigureAwait(false);
 
-
+            var playlist = JsonSerializer.Deserialize<List<PlaylistResponse>>(plRes, null);
             //get the response and be able to return a partial view
             trackList = JsonSerializer.Deserialize<List<TrackResponse>>(res, null);
             //returns okay response with a redirect to viewing the tracks?
+            var viewModel = new TrackResponseViewModel
+            {
+                Id = playlist.First().Id,
+                Name = playlist.First().Title,
+                Tracks = new List<TrackViewModel>()
+            };
+            trackList.ForEach(t => {
+                viewModel.Tracks.Add(
+                    new TrackViewModel
+                    {
+                        length = ParseTime(t.length),
+                        artists = t.artists,
+                        title = t.title,
+                    });
+            });
 
+            return PartialView("ViewTracks", viewModel);
+        }
 
-            return PartialView("ViewTracks", trackList);
+        private string ParseTime(int milli)
+        {
+            var thing = TimeSpan.FromMilliseconds(milli);
+
+            var time = new DateTime(thing.Ticks).ToString("mm:ss");
+
+            return time;
+
         }
 
         //Get playlists for current user
         [HttpGet]
-        public async Task<IActionResult> GetPlaylists()
+        public async Task<IActionResult> GetPlaylists(bool playListOnly = false)
         {
             //get auth cookie
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
             var playlistList = new List<PlaylistResponse>();
 
             //make api call to get all playlists
-            var res = await _sas.Access("get", auth, "/Playlist", null).ConfigureAwait(true);
+            var res = await _sas.Access("get", auth, "/Playlist?playListOnly=true", null).ConfigureAwait(true);
             //get the response and be able to return a partial view
             var playlistResponse = JsonSerializer.Deserialize<List<PlaylistResponse>>(res, null);
             //returns okay response with a redirect to viewing the tracks?
@@ -181,9 +207,44 @@ namespace SpotAPIFrontEnd.Controllers
         {
             //get auth cookie
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
-            var res = await _sas.Access("get", auth, "/Delete?id="+id, null);
+            var res = await _sas.Access("get", auth, "/Delete?id="+id, null).ConfigureAwait(true);
 
             return RedirectToAction("GetPlaylists");
+        }
+
+        public async Task<IActionResult> UpdatePlaylist(string id)
+        {
+            //get auth cookie
+            HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
+            var res = await _sas.Access("post", auth, "/Update?id=" + id, null).ConfigureAwait(true);
+
+            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(res, null);
+
+            if (playlistResponse.TrackCount == 0)
+            {
+                playlistResponse.Title = "Huh, maybe delete this one, nothing was added for " + playlistResponse.Title;
+            }
+
+            //returns okay response with a redirect to viewing the tracks?
+            return PartialView("ViewPlaylists", new List<PlaylistResponse>() { playlistResponse });
+        }
+
+
+        public async Task<IActionResult> CopyPlaylist(string id)
+        {
+            //get auth cookie
+            HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
+            var res = await _sas.Access("post", auth, "/Copy?id=" + id, null).ConfigureAwait(true);
+
+            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(res, null);
+
+            if (playlistResponse.TrackCount == 0)
+            {
+                playlistResponse.Title = "Huh, maybe delete this one, nothing was added for " + playlistResponse.Title;
+            }
+
+            //returns okay response with a redirect to viewing the tracks?
+            return PartialView("ViewPlaylists", new List<PlaylistResponse>() { playlistResponse });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
