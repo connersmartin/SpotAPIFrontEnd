@@ -69,8 +69,8 @@ function PostPlaylist() {
 $("#getPlaylists").click(function () {
     $("#SpotParams").hide();
     $("#ViewTracks").hide();
-    $("#ViewPlaylists").show();
     $("#ViewPlaylists").html("This may take a while, be patient. We are gathering all of your playlists and their associated tracks.");
+    $("#ViewPlaylists").show();
     $.ajax({
         url: '/Home/GetPlaylists',
         success: function (data) {            
@@ -87,8 +87,8 @@ $("#getPlaylists").click(function () {
 $("#updatePlaylist").click(function () {
     $("#SpotParams").hide();
     $("#ViewTracks").hide();
-    $("#ViewPlaylists").show();
     $("#ViewPlaylists").html("This may take a while, be patient. We are gathering all of your playlists and their associated tracks.");
+    $("#ViewPlaylists").show();
     $.ajax({
         url: '/Home/GetPlaylists?playListOnly=true',
         success: function (data) {
@@ -105,6 +105,7 @@ function getTracks(id)
 {
     $("#SpotParams").hide();
     $("#ViewPlaylists").hide();
+    $("#ViewTracks").html("This may take a while, be patient. We are gathering all of the tracks associated with this playlist.");
     $("#ViewTracks").show();
     $.ajax({
         url: '/Home/GetTracks/' + id,
@@ -122,8 +123,8 @@ $("#getSavedTracks").click(function () {
         $('#initLink').hide();
         $("#SpotParams").hide();
         $("#ViewTracks").hide();
-        $("#ViewPlaylists").show();
         $("#ViewPlaylists").html("This may take a while, be patient. We are petitioning Spotify's API to convert all your saved tracks into an actual playlist.");
+        $("#ViewPlaylists").show();
         var spotOb = new Object();
         spotOb.SavedTracks = true;
         $.ajax({
@@ -163,8 +164,8 @@ function newPlaylist(id) {
 function updatePlaylist(id) {
     $("#ViewPlaylists").hide();
     $("#SpotParams").hide();
-    $("#ViewTracks").show();
     $("#ViewTracks").html("This may take a while, be patient. We are petitioning Spotify's API.");
+    $("#ViewTracks").show();
     $.ajax({
         url: '/Home/UpdatePlaylist/' + id,
         success: function (data) {
@@ -204,7 +205,7 @@ function deletePlaylist(id) {
                 $("#ViewPlaylists").html(data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                $("#ViewPlaylists").html(errorText + XMLHttpRequest.responseText);
+                $("#ViewPlaylists").html(errorText);
             }
         });
     }
