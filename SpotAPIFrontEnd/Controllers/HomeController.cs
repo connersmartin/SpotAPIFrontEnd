@@ -79,7 +79,7 @@ namespace SpotAPIFrontEnd.Controllers
                     response = await client.PostAsync(baseUrl,new FormUrlEncodedContent(body)).ConfigureAwait(true);
                     responseContent = response.Content.ReadAsStringAsync().Result;                    
                 }
-                var tokenCookie = JsonSerializer.Deserialize<Token>(responseContent);
+                var tokenCookie = Mapper<Token>(responseContent);
                 HttpContext.Response.Cookies.Append("spotauthtoke", tokenCookie.access_token);
 
                 //why not set genres now?
@@ -102,9 +102,9 @@ namespace SpotAPIFrontEnd.Controllers
             var res = await _sas.Access("post", auth, "/Tracks", jsonParams).ConfigureAwait(false);
             var plRes = await _sas.Access("get", auth, "/Playlist?id="+id, jsonParams).ConfigureAwait(false);
 
-            var playlist = JsonSerializer.Deserialize<List<PlaylistResponse>>(plRes, new JsonSerializerOptions());
+            var playlist = Mapper<List<PlaylistResponse>>(plRes);
             //get the response and be able to return a partial view
-            trackList = JsonSerializer.Deserialize<List<TrackResponse>>(res, new JsonSerializerOptions());
+            trackList = Mapper<List<TrackResponse>>(res);
             //returns okay response with a redirect to viewing the tracks?
             var viewModel = new TrackResponseViewModel
             {
@@ -145,8 +145,9 @@ namespace SpotAPIFrontEnd.Controllers
 
             //make api call to get all playlists
             var res = await _sas.Access("get", auth, "/Playlist?playListOnly=true", null).ConfigureAwait(true);
+            
             //get the response and be able to return a partial view
-            var playlistResponse = JsonSerializer.Deserialize<List<PlaylistResponse>>(res, new JsonSerializerOptions());
+            var playlistResponse = Mapper<List<PlaylistResponse>>(res);
             //returns okay response with a redirect to viewing the tracks?
 
             return PartialView("ViewPlaylists", playlistResponse);
@@ -189,7 +190,7 @@ namespace SpotAPIFrontEnd.Controllers
             //send to spot api
             var res = await _sas.Access("post", auth, "/Create", jsonParams).ConfigureAwait(true);
             //get the response and be able to return a partial view
-            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(res, new JsonSerializerOptions());    
+            var playlistResponse = Mapper<PlaylistResponse>(res);    
 
             if (playlistResponse.TrackCount == 0)
             {
@@ -220,7 +221,7 @@ namespace SpotAPIFrontEnd.Controllers
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
             var res = await _sas.Access("post", auth, "/Update?id=" + id, null).ConfigureAwait(true);
 
-            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(res, new JsonSerializerOptions());
+            var playlistResponse = Mapper<PlaylistResponse>(res);
 
             if (playlistResponse.TrackCount == 0)
             {
@@ -238,7 +239,7 @@ namespace SpotAPIFrontEnd.Controllers
             HttpContext.Request.Cookies.TryGetValue("spotauthtoke", out string auth);
             var res = await _sas.Access("post", auth, "/Copy?id=" + id, null).ConfigureAwait(true);
 
-            var playlistResponse = JsonSerializer.Deserialize<PlaylistResponse>(res, new JsonSerializerOptions());
+            var playlistResponse = Mapper<PlaylistResponse>(res);
 
             if (playlistResponse.TrackCount == 0)
             {
@@ -275,7 +276,7 @@ namespace SpotAPIFrontEnd.Controllers
 
                     client.BaseAddress = new Uri(baseAddress);
                     var genreResponse = await client.GetAsync(baseAddress);
-                    spotifyGenres = JsonSerializer.Deserialize<GenreResponse>(await genreResponse.Content.ReadAsByteArrayAsync(), new JsonSerializerOptions());
+                    spotifyGenres = Mapper<GenreResponse>(await genreResponse.Content.ReadAsStringAsync());
 
                 }
 
@@ -286,7 +287,7 @@ namespace SpotAPIFrontEnd.Controllers
             return spotifyGenres.genres;
         }
         //Helper function
-        public static List<SelectListItem> ArrayToSelectList(string[] items)
+        private static List<SelectListItem> ArrayToSelectList(string[] items)
         {
             var list = new List<SelectListItem>();
 
@@ -298,7 +299,7 @@ namespace SpotAPIFrontEnd.Controllers
             return list;
         }
         //Helper function
-        public static List<SelectListItem> DecimalToSelectList()
+        private static List<SelectListItem> DecimalToSelectList()
         {
             var list = new List<SelectListItem>();
             list.Add(new SelectListItem("n/a", ""));
@@ -308,6 +309,18 @@ namespace SpotAPIFrontEnd.Controllers
             }
 
             return list;
+        }
+
+        private T Mapper<T>(string json)
+        {
+            try
+            {
+                return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions());
+            }
+            catch (Exception)
+            {
+                return default(T);
+            }
         }
     }
 }

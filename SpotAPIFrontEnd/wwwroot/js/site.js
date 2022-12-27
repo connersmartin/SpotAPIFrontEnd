@@ -18,7 +18,7 @@ $("#showPartial").click(function () {
     });
 });
 
-var errorText = "Oops, something went wrong, please click 'Do it' and try again. If the problem persists please contact me";
+var errorText = "Oops, something went wrong, please click 'Authorized' and try again. If the problem persists please contact me";
 
 function PostPlaylist() {
     $('#initLink').hide();

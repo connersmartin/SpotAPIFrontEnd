@@ -6,6 +6,15 @@
 <br />
 <img src="~/Spotify_Logo_RGB_Green.png" height="70" style="margin:35px" />
 <br /> 
+
+
+@if(Model == null)
+{
+    <p>Request returned no data. Click Authorize and try again. If problem persists, try clearing cookies for this site.</p>
+}
+else
+{
+
 <table class="table">
     <thead>
         <tr>
@@ -44,3 +53,4 @@
         }
     </tbody>
 </table>
+}
