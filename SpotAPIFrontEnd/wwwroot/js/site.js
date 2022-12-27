@@ -43,6 +43,8 @@ function PostPlaylist() {
             spotOb.energy = submitData.Energy.value;
             spotOb.valence = submitData.Valence.value;
         }
+        $("#spotParams").html("This may take a while, be patient. We are petitioning Spotify's API to create this playlist.");
+
         $.ajax({
             type: "POST",
             url: "Home/SpotParams",
@@ -66,23 +68,21 @@ function PostPlaylist() {
 
 //ajax call for getting playlists
 
-$("#getPlaylists").click(function () {
+$("#getPlaylists").click(() => {
     $("#SpotParams").hide();
     $("#ViewTracks").hide();
     $("#ViewPlaylists").html("This may take a while, be patient. We are gathering all of your playlists and their associated tracks.");
     $("#ViewPlaylists").show();
     $.ajax({
         url: '/Home/GetPlaylists',
-        success: function (data) {            
+        success: function (data) {
             $("#ViewPlaylists").html(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             $("#ViewPlaylists").html(errorText);
         }
-    });
+    })
 });
-
-//ajax call to only get playlists
 
 $("#updatePlaylist").click(function () {
     $("#SpotParams").hide();
@@ -150,6 +150,8 @@ function newPlaylist(id) {
     $("#ViewPlaylists").hide();
     $("#ViewTracks").hide();
     $("#SpotParams").show();
+    $("#SpotParams").html("This may take a while, be patient. We are petitioning Spotify's API to create this playlist.");
+
     $.ajax({
         url: '/Home/SpotParams/' + id,
         success: function (data) {
@@ -184,13 +186,16 @@ function copyPlaylist(id) {
         $("#SpotParams").hide();
         $("#ViewTracks").show();
         $("#ViewTracks").html("This may take a while, be patient. We are petitioning Spotify's API.");
+        $("#ViewPlaylists").html("This may take a while, be patient. We are petitioning Spotify's API.");
         $.ajax({
             url: '/Home/CopyPlaylist/' + id,
             success: function (data) {
                 $("#ViewTracks").html(data);
+                $("#ViewPlaylists").html(data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 $("#ViewTracks").html(errorText);
+                $("#ViewPlaylists").html(errorText);
             }
         });
     }
@@ -198,14 +203,28 @@ function copyPlaylist(id) {
 
 function deletePlaylist(id) {
     if (window.confirm('Do you really want to delete/unfollow this playlist?')) {
+        $("#ViewPlaylists").html("Deleting playlist, you will see your playlists when this is completed");
+        $("#ViewTracks").html("Deleting playlist, you will see your playlists when this is completed");
         $.ajax({
             url: '/Home/DeletePlaylist/' + id,
-            success: function (data) {
+            success: () => {
+                $("#SpotParams").hide();
+                $("#ViewTracks").hide();
+                $("#ViewPlaylists").html("This may take a while, be patient. We are gathering all of your playlists and their associated tracks.");
                 $("#ViewPlaylists").show();
-                $("#ViewPlaylists").html(data);
+                $.ajax({
+                    url: '/Home/GetPlaylists',
+                    success: function (data) {
+                        $("#ViewPlaylists").html(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $("#ViewPlaylists").html(errorText);
+                    }
+                })
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 $("#ViewPlaylists").html(errorText);
+                $("#ViewTracks").html(errorText);
             }
         });
     }
